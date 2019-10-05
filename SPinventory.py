@@ -78,17 +78,27 @@ def simulate(init_inventory=0, selling_price=0, purchasing_cost=0, salvage_value
         salvage_value_stream.append(leftover * salvage_value)
         lost_sales_stream.append(lost_sales)
 
+    avg_profit = int(np.mean(revenue_stream) - purchasing_cost * inventory + np.mean(leftover_stream) * salvage_value - np.mean(lost_sales_stream) * goodwill_cost)
+    avg_revenue = int(np.mean(revenue_stream))
+    purchasing_cost_per_period = int(purchasing_cost) * inventory
+    avg_salvage_value = int(np.mean(leftover_stream) * salvage_value)
+    avg_leftover = int(np.mean(leftover_stream))
+    avg_lost_sales = int(np.mean(lost_sales_stream))
+    avg_lost_sales_value = int(avg_lost_sales * goodwill_cost)
     if not ret:
         print('DONE!')
-        print(f'Average profit:     {np.mean(revenue_stream) - purchasing_cost * inventory + np.mean(leftover_stream) * salvage_value - np.mean(lost_sales_stream) * goodwill_cost:>10}')
-        print(f'Average revenue:    {np.mean(revenue_stream):>10}')
-        print(f'Purchasing cost:    {float(purchasing_cost) * inventory:>10}')
-        if salvage_value > 0:
-            print(f'Average salvage value:    {np.mean(leftover_stream) * salvage_value:>10}')
-        print(f'Average leftover:   {np.mean(leftover_stream):>10}')
+        print()
+        print(f'Average profit:                 {avg_profit:>10} €')
+        print('- ' * 30)
+        print(f'Average revenue:                {avg_revenue:>10} €')
+        print(f'Purchasing cost:                {-purchasing_cost_per_period:>10} €')
+        if salvage_value != 0:
+            print(f'Average salvage value:          {avg_salvage_value:>10} €')
         if goodwill_cost > 0:
-            print(f'Average lost sales (value): {np.mean(lost_sales_stream) * goodwill_cost:>10}')
-        print(f'Average lost sales (quantity): {np.mean(lost_sales_stream):>10}')
+            print(f'Average lost sales (value):     {-avg_lost_sales_value:>10} €')
+        print('- ' * 30)
+        print(f'Average leftover:               {avg_leftover:>10} units')
+        print(f'Average lost sales (quantity):  {avg_lost_sales:>10} units')
     else:
         return int(np.mean(revenue_stream) - purchasing_cost * inventory + np.mean(leftover_stream) * salvage_value - np.mean(lost_sales_stream) * goodwill_cost)
 
