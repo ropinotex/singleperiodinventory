@@ -24,13 +24,37 @@ print('WARNING: This software is designed and provided for educational purpose o
 
 
 def tn(mu, sigma, lower, upper, n):
-    """ n realizations of a truncated normal between lower and upper """
+    """ Returns realizations of a truncated normal between lower and upper
+        Usage:
+            tn(mu=mu, sigma=sigma, lower=lower, upper=upper, n=n)
+
+        Parameters:
+            mu (float): mean value of the truncated normal distribution
+            sigma (float): std deviation of the truncated normal distribution
+            lower (float): lower bound of the interval upon which the distribution is defined
+            upper (float): upper bound of the interval upon which the distribution is defined
+            n (int): number of realizations
+
+        Returns:
+            list: data from the distribution"""
+
     a, b = (lower - mu) / sigma, (upper - mu) / sigma
     np.random.seed(seed=123456)
     return truncnorm(a, b, mu, sigma).rvs(n)
 
 
 def data(case=1, plot=False, size=10000):
+    """ Returns a time series from the archive
+        Usage:
+            data(case=case, plot=plot)
+
+        Parameters:
+            case (int): id of the case to analyze (between 1 and 4)
+            plot (bool): if True, plot the histogram of the data
+
+        Returns:
+            list: data
+            plot: if plot=True plots the histogram of the data"""
 
     if case == 1:
         values = [400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700]
@@ -47,9 +71,17 @@ def data(case=1, plot=False, size=10000):
         return
 
     if plot:
-        plt.figure(figsize=(10, 5), dpi=96)
+        plt.figure(figsize=(10, 5), dpi=120)
         plt.hist(demand, bins=100, density=True, stacked=True, label='Demand frequency')
-        plt.xlabel('Demand')
+        if case == 1:
+            plt.table(cellText=[values, probabilities],
+                      rowLabels=['Inventory', 'Probability'],
+                      colLabels=None,
+                      loc='bottom')
+            plt.xlabel('')
+            plt.xticks([])
+        else:
+            plt.xlabel('Demand')
         plt.ylabel('Frequency')
         plt.legend()
         plt.show()
@@ -68,6 +100,7 @@ def simulate(init_inventory=0, selling_price=0, purchasing_cost=0, salvage_value
     salvage_value_stream = []
     leftover_stream = []
 
+    # Simulate and collect data
     for t in range(size):
         sales = min(inventory, demand[t])
         lost_sales = max(0., demand[t] - inventory)
@@ -78,6 +111,7 @@ def simulate(init_inventory=0, selling_price=0, purchasing_cost=0, salvage_value
         salvage_value_stream.append(leftover * salvage_value)
         lost_sales_stream.append(lost_sales)
 
+    # Summarize stats
     avg_profit = int(np.mean(revenue_stream) - purchasing_cost * inventory + np.mean(leftover_stream) * salvage_value - np.mean(lost_sales_stream) * goodwill_cost)
     avg_revenue = int(np.mean(revenue_stream))
     purchasing_cost_per_period = int(purchasing_cost) * inventory
@@ -85,6 +119,8 @@ def simulate(init_inventory=0, selling_price=0, purchasing_cost=0, salvage_value
     avg_leftover = int(np.mean(leftover_stream))
     avg_lost_sales = int(np.mean(lost_sales_stream))
     avg_lost_sales_value = int(avg_lost_sales * goodwill_cost)
+
+    # if ret == False, print the summary of the stats. Return the avg profit otherwise
     if not ret:
         print('DONE!')
         print()
@@ -100,7 +136,7 @@ def simulate(init_inventory=0, selling_price=0, purchasing_cost=0, salvage_value
         print(f'Average leftover:               {avg_leftover:>10} units')
         print(f'Average lost sales (quantity):  {avg_lost_sales:>10} units')
     else:
-        return int(np.mean(revenue_stream) - purchasing_cost * inventory + np.mean(leftover_stream) * salvage_value - np.mean(lost_sales_stream) * goodwill_cost)
+        return avg_profit
 
 
 def plot_profits(levels=None, selling_price=0, purchasing_cost=0, salvage_value=0, goodwill_cost=0, case=1, size=10000):
