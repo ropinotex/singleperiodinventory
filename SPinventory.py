@@ -156,6 +156,8 @@ def plot_profits(levels=None, selling_price=0, purchasing_cost=0, salvage_value=
     print('PLOTTING...', end='')
     plt.figure(figsize=(10, 5), dpi=96)
     plt.plot(levels, profits, label='Average profit', marker='o')
+    plt.vlines(levels, 0, profits, linestyles='dashed', color='#e0e0e0')
+    plt.hlines(0, levels[0], levels[-1], linestyles='dashed', color='#FA8072')
     plt.ylabel('€')
     plt.table(cellText=[levels, profits],
               rowLabels=['Inventory', 'Profit'],
