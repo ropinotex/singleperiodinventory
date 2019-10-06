@@ -28,7 +28,7 @@ def tn(mu, sigma, lower, upper, n):
         Usage:
             tn(mu=mu, sigma=sigma, lower=lower, upper=upper, n=n)
 
-        Parameters:
+        Arguments:
             mu (float): mean value of the truncated normal distribution
             sigma (float): std deviation of the truncated normal distribution
             lower (float): lower bound of the interval upon which the distribution is defined
@@ -48,7 +48,7 @@ def data(case=1, plot=False, size=10000):
         Usage:
             data(case=case, plot=plot)
 
-        Parameters:
+        Arguments:
             case (int): id of the case to analyze (between 1 and 4)
             plot (bool): if True, plot the histogram of the data
 
@@ -67,8 +67,7 @@ def data(case=1, plot=False, size=10000):
     elif case == 4:
         demand = tn(250, 250, 100, 1100, size)
     else:
-        print('ERROR: case id not valid')
-        return
+        raise(Exception('ERROR: case id not valid'))
 
     if plot:
         plt.figure(figsize=(10, 5), dpi=120)
@@ -90,10 +89,29 @@ def data(case=1, plot=False, size=10000):
 
 
 def simulate(init_inventory=0, selling_price=0, purchasing_cost=0, salvage_value=0, goodwill_cost=0, case=1, size=10000, ret=False):
+    """ Simulated the demand
+
+        Arguments:
+            init_inventory (int): quantity on stock at the beginning of each period
+            selling_price (float): unit selling price to the final market
+            purchasing_cost (float): unit purchasing cost from supplier
+            salvage_value (float): unit salvage value
+            goodwill_cost (float): unit cost for stockout
+            case (int): case to analyze
+
+        Returns:
+            Prints the performance table (units and values)"""
+
+    if salvage_value > purchasing_cost:
+        print('ERROR: the salvage_value must best smaller than the purchasing_cost')
     if not ret:
         print('THINKING...', end='')
 
-    demand = data(case=case)
+    try:
+        demand = data(case=case)
+    except Exception:
+        return(f'ERROR: case_id {case} not valid')
+
     inventory = init_inventory
     revenue_stream = []
     lost_sales_stream = []
