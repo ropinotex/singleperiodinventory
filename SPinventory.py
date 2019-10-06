@@ -23,7 +23,7 @@ __status__ = "Use for teaching only"
 print('WARNING: This software is designed and provided for educational purpose only')
 
 
-def tn(mu, sigma, lower, upper, n):
+def tn(mu, sigma, lower, upper, n=0, service_level=None):
     """ Returns realizations of a truncated normal between lower and upper
         Usage:
             tn(mu=mu, sigma=sigma, lower=lower, upper=upper, n=n)
@@ -40,32 +40,45 @@ def tn(mu, sigma, lower, upper, n):
 
     a, b = (lower - mu) / sigma, (upper - mu) / sigma
     np.random.seed(seed=123456)
+    if service_level:
+        return truncnorm(a, b, mu, sigma).ppf(service_level)
     return truncnorm(a, b, mu, sigma).rvs(n)
 
 
-def data(case=1, plot=False, size=10000):
+def data(case=1, plot=False, service_level=None, size=10000):
     """ Returns a time series from the archive
         Usage:
             data(case=case, plot=plot)
 
         Arguments:
             case (int): id of the case to analyze (between 1 and 4)
+            service_level (float): desired service level quantity
             plot (bool): if True, plot the histogram of the data
 
         Returns:
             list: data
-            plot: if plot=True plots the histogram of the data"""
+            plot: if plot=True plots the histogram of the data
+            float: if service_level, return the quantity Q ensuring a service level equal to service_level"""
 
     if case == 1:
         values = [400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700]
         probabilities = [0.01, 0.02, 0.04, 0.08, 0.09, 0.11, 0.16, 0.20, 0.11, 0.10, 0.04, 0.02, 0.01, 0.01]
-        demand = rv_discrete(values=(values, probabilities), seed=12345).rvs(size=size)
+        dist = rv_discrete(values=(values, probabilities), seed=123456)
+        if service_level:
+            return dist.ppf(service_level)
+        demand = dist.rvs(size=size)
     elif case == 2:
-        demand = tn(750, 300, 100, 1100, size)
+        if service_level:
+            return tn(750, 300, 100, 1100, service_level=service_level)
+        demand = tn(750, 300, 100, 1100, n=size)
     elif case == 3:
-        demand = tn(250, 650, 100, 1100, size)
+        if service_level:
+            return tn(250, 650, 100, 1100, service_level=service_level)
+        demand = tn(250, 650, 100, 1100, n=size)
     elif case == 4:
-        demand = tn(250, 250, 100, 1100, size)
+        if service_level:
+            return tn(250, 250, 100, 1100, service_level=service_level)
+        demand = tn(250, 250, 100, 1100, n=size)
     else:
         raise(Exception('ERROR: case id not valid'))
 
