@@ -89,7 +89,7 @@ def data(case=1, plot=False, size=10000):
 
 
 def simulate(init_inventory=0, selling_price=0, purchasing_cost=0, salvage_value=0, goodwill_cost=0, case=1, size=10000, ret=False):
-    """ Simulated the demand
+    """ Simulates the demand for a given init_inventory
 
         Arguments:
             init_inventory (int): quantity on stock at the beginning of each period
@@ -158,6 +158,19 @@ def simulate(init_inventory=0, selling_price=0, purchasing_cost=0, salvage_value
 
 
 def plot_profits(levels=None, selling_price=0, purchasing_cost=0, salvage_value=0, goodwill_cost=0, case=1, size=10000):
+    """ Simulates the demand for several init_inventory levels and plots the results (i.e. average profits)
+
+        Arguments:
+            levels (list): list of init_inventory to test
+            selling_price (float): unit selling price to the final market
+            purchasing_cost (float): unit purchasing cost from supplier
+            salvage_value (float): unit salvage value
+            goodwill_cost (float): unit cost for stockout
+            case (int): case to analyze
+
+        Returns:
+            Plot of the profits corresponding to different init_inventory levels"""
+
     if not isinstance(levels, list):
         levels = [levels]
     print('THINKING...', end='')
@@ -184,3 +197,21 @@ def plot_profits(levels=None, selling_price=0, purchasing_cost=0, salvage_value=
     plt.xticks([])
     plt.legend()
     plt.show()
+
+
+def service_level(selling_price=0, purchasing_cost=0, salvage_value=0, goodwill_cost=0):
+    """ Computes the optimal service level (beta)
+
+        Arguments:
+            selling_price (float): unit selling price to the final market
+            purchasing_cost (float): unit purchasing cost from supplier
+            salvage_value (float): unit salvage value
+            goodwill_cost (float): unit cost for stockout
+
+        Returns:
+            float: optimal service level (beta)"""
+
+    Co = purchasing_cost - salvage_value
+    Cu = selling_price - purchasing_cost
+
+    return Cu / (Cu + Co)
