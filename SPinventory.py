@@ -1,7 +1,7 @@
 # ==============================================================================
 # description     :Single period inventory analysis toolbox
 # author          :Roberto Pinto
-# date            :2019.09.25
+# date            :2019.10.14
 # version         :1.0
 # notes           :This software is meant for teaching purpose only and it is provided as-is
 # python_version  :3.7
@@ -45,7 +45,7 @@ def tn(mu, sigma, lower, upper, n=0, service_level=None):
     return truncnorm(a, b, mu, sigma).rvs(n)
 
 
-def data(case=1, plot=False, service_level=None, size=10000):
+def data(case=1, plot=False, service_level=None, info=False, size=10000):
     """ Returns a time series from the archive
         Usage:
             data(case=case, plot=plot)
@@ -71,14 +71,37 @@ def data(case=1, plot=False, service_level=None, size=10000):
         if service_level:
             return tn(750, 300, 100, 1100, service_level=service_level)
         demand = tn(750, 300, 100, 1100, n=size)
+        if info:
+            print(f'TRUNCATED NORMAL DISTRIBUTION IN [100, 1100]')
+            print(f'Mean (mu): 750   Std.dev (sigma): 300')
     elif case == 3:
         if service_level:
             return tn(250, 650, 100, 1100, service_level=service_level)
         demand = tn(250, 650, 100, 1100, n=size)
+        if info:
+            print(f'TRUNCATED NORMAL DISTRIBUTION IN [100, 1100]')
+            print(f'Mean (mu): 250   Std.dev (sigma): 650')
     elif case == 4:
         if service_level:
             return tn(250, 250, 100, 1100, service_level=service_level)
         demand = tn(250, 250, 100, 1100, n=size)
+        if info:
+            print(f'TRUNCATED NORMAL DISTRIBUTION IN [100, 1100]')
+            print(f'Mean (mu): 250   Std.dev (sigma): 250')
+    elif case == 5:
+        if service_level:
+            print("")
+            print("*" * 95)
+            print("Service level is not defined for this distribution, you have to define it by yourself")
+            print("*" * 95)
+            print("")
+        demand_1 = tn(800, 100, 100, 1100, n=int(np.ceil(size / 3)))
+        demand_2 = tn(500, 100, 100, 1100, n=int(np.ceil(size / 3)))
+        demand_3 = tn(200, 100, 100, 1100, n=int(np.ceil(size / 3)))
+        demand = np.concatenate((demand_1, demand_2, demand_3))
+        if info:
+            print(f'TRIMODAL DISTRIBUTION IN [100, 1100]')
+            print(f'Mean (mu): {int(np.mean(demand))}   Std.dev (sigma): {int(np.std(demand))}')
     else:
         raise(Exception('ERROR: case id not valid'))
 
