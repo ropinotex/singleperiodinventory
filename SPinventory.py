@@ -193,11 +193,11 @@ def simulate(init_inventory=0, selling_price=0, purchasing_cost=0, salvage_value
         return avg_profit
 
 
-def plot_profits(levels=None, selling_price=0, purchasing_cost=0, salvage_value=0, goodwill_cost=0, case=1, size=10000):
+def plot_profits(init_inventory=None, selling_price=0, purchasing_cost=0, salvage_value=0, goodwill_cost=0, case=1, size=10000):
     """ Simulates the demand for several init_inventory levels and plots the results (i.e. average profits)
 
         Arguments:
-            levels (list): list of init_inventory to test
+            init_inventory (list): list of init_inventory to test
             selling_price (float): unit selling price to the final market
             purchasing_cost (float): unit purchasing cost from supplier
             salvage_value (float): unit salvage value
@@ -207,11 +207,11 @@ def plot_profits(levels=None, selling_price=0, purchasing_cost=0, salvage_value=
         Returns:
             Plot of the profits corresponding to different init_inventory levels"""
 
-    if not isinstance(levels, list):
-        levels = [levels]
+    if not isinstance(init_inventory, list):
+        init_inventory = [init_inventory]
     print('THINKING...', end='')
     profits = []
-    for each in levels:
+    for each in init_inventory:
         profits.append(simulate(init_inventory=each,
                                 selling_price=selling_price,
                                 purchasing_cost=purchasing_cost,
@@ -222,11 +222,11 @@ def plot_profits(levels=None, selling_price=0, purchasing_cost=0, salvage_value=
                                 ret=True))
     print('PLOTTING...', end='')
     plt.figure(figsize=(10, 5), dpi=96)
-    plt.plot(levels, profits, label='Average profit', marker='o')
-    plt.vlines(levels, 0, profits, linestyles='dashed', color='#e0e0e0')
-    plt.hlines(0, levels[0], levels[-1], linestyles='dashed', color='#FA8072')
+    plt.plot(init_inventory, profits, label='Average profit', marker='o')
+    plt.vlines(init_inventory, 0, profits, linestyles='dashed', color='#e0e0e0')
+    plt.hlines(0, init_inventory[0], init_inventory[-1], linestyles='dashed', color='#FA8072')
     plt.ylabel('€')
-    plt.table(cellText=[levels, profits],
+    plt.table(cellText=[init_inventory, profits],
               rowLabels=['Inventory', 'Profit'],
               colLabels=None,
               loc='bottom')
