@@ -1,7 +1,7 @@
 # ==============================================================================
 # description     :Single period inventory analysis toolbox
 # author          :Roberto Pinto
-# date            :2019.10.14
+# date            :2021.10.30
 # version         :1.0
 # notes           :This software is meant for teaching purpose only and it is provided as-is
 # python_version  :3.7
@@ -84,7 +84,7 @@ def data(case=1, plot=False, service_level=None, info=False, size=10000):
     elif case == 4:
         if service_level:
             return tn(250, 250, 100, 1100, service_level=service_level)
-        demand = tn(250, 250, 100, 1100, n=size)
+        demand = tn(12500, 3750, 0, 25000, n=size)
         if info:
             print(f'TRUNCATED NORMAL DISTRIBUTION IN [100, 1100]')
             print(f'Mean (mu): 250   Std.dev (sigma): 250')
