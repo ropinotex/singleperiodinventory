@@ -168,7 +168,7 @@ def simulate(init_inventory=0, selling_price=0, purchasing_cost=0, salvage_value
     # Summarize stats
     avg_profit = int(np.mean(revenue_stream) - purchasing_cost * inventory + np.mean(leftover_stream) * salvage_value - np.mean(lost_sales_stream) * goodwill_cost)
     avg_revenue = int(np.mean(revenue_stream))
-    purchasing_cost_per_period = int(purchasing_cost) * inventory
+    purchasing_cost_per_period = int(purchasing_cost * inventory)
     avg_salvage_value = int(np.mean(leftover_stream) * salvage_value)
     avg_leftover = int(np.mean(leftover_stream))
     avg_lost_sales = int(np.mean(lost_sales_stream))
